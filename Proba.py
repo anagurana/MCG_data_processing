@@ -9,36 +9,36 @@ import numpy as np
 
 # Sample frequency
 Fs = 1000 # Hz
-def notchFitler(data, Fs, frequency = 16.5, Q = 10):
+def notchFitler(data, Fs, frequency, Q):
     nyquistFrequency = Fs/2.
     normalizedCutoff = frequency/nyquistFrequency
     b,a = signal.iirnotch(w0=normalizedCutoff, Q=Q)
     xfiltered = signal.filtfilt(b,a,data)
     return xfiltered
-def lowFilter(data, Fs, frequency = 16.5):
+def lowFilter(data, Fs, highFrequency):
     nyquistFrequency = Fs / 2.
-    normalizedCutoff = frequency / nyquistFrequency
+    normalizedCutoff = highFrequency / nyquistFrequency
     b,a = signal.butter(5, normalizedCutoff, btype='low')
     return filtfilt(b, a, data)
-def highFilter(data, Fs, frequency ):
+def highFilter(data, Fs, lowFrequency ):
     nyquistFrequency = Fs / 2.
-    normalizedCutoff = frequency / nyquistFrequency
+    normalizedCutoff = lowFrequency / nyquistFrequency
     b, a = signal.butter(5, normalizedCutoff, btype='high')
     return filtfilt(b, a, data)
-def bandpassFilter(data, Fs, lf, hf):
+def bandpassFilter(data, Fs, lowf, highf):
     nyquistFrequency = Fs / 2.
-    normalizedCutoffH = hf / nyquistFrequency
-    normalizedCutoffL = lf / nyquistFrequency
+    normalizedCutoffH = highf / nyquistFrequency
+    normalizedCutoffL = lowf / nyquistFrequency
     b,a = signal.butter(5, [normalizedCutoffL, normalizedCutoffH], btype='band')
     return lfilter(b, a, data)
-def allWithOne (signal, lf, hf, Fs, Q, notch1, notch2):
-    y1 = highFilter(signal, Fs, lf)
-    y1 = lowFilter(y1, Fs, hf)
+def allWithOne (signal, lowf, highf, Fs, Q, notch1, notch2):
+    y1 = highFilter(signal, Fs, lowf)
+    y1 = lowFilter(y1, Fs, highf)
     y1 = notchFitler(y1, Fs, notch1, Q)
     y1 = notchFitler(y1, Fs, notch2, Q)
     return y1
-def hpException (signal, hf, Fs, Q, notch1, notch2):
-    y1 = lowFilter(signal, Fs, hf)
+def hpException (signal, highf, Fs, Q, notch1, notch2):
+    y1 = lowFilter(signal, Fs, highf)
     y1 = notchFitler(y1, Fs, notch1, Q)
     y1 = notchFitler(y1, Fs, notch2, Q)
     return y1
@@ -49,7 +49,6 @@ def peaksAndAveraged (signal, visibility):
     average_final = np.average(templates, axis=0)
     return rpeaks, average_final, templates
 def powerSpectral (signal):
-    #zmienic na skumulowany jednokrotnie
     freqs, psd1 = powerSpectralDensity(signal, Fs)
     #Plot spectrum
     plt.loglog(freqs, psd1)
@@ -58,11 +57,13 @@ def powerSpectral (signal):
     plt.grid()
     plt.show()
 def plotAvereged (templates, average_final):
-    ts_tmpl = np.linspace(-0.2, 0.4, templates.shape[1], endpoint=False)
+    ts_tmpl = np.linspace(0, 0.6, templates.shape[1], endpoint=False)
     plt.plot(ts_tmpl, average_final)
-    plt.xlabel("Time (s)")
-    plt.ylabel("Signal (pT)")
+    plt.xlabel("Czas (s)")
+    plt.ylabel("Amplituda (pT)")
+    plt.grid()
     plt.show()
+
 
 #File loading
 filename = "Tom II MCG.tsv"
@@ -92,14 +93,14 @@ y2= y2[64000:73500]
 times = arange(len(y1))/Fs
 
 # HP filters
-y1 = highFilter (y1, Fs, 1)
-y2 = highFilter (y2, Fs, 0.3)
-
-'''#Plot timeseries for avereged signal
+y1 = highFilter (y1, Fs, lowFrequency=1)
+y2 = highFilter (y2, Fs, lowFrequency=0.3)
+y1 = hpException (y1, highf=70, Fs=Fs, Q=50, notch1=50, notch2=100)
+y2 = hpException (y2, highf=80, Fs=Fs, Q=50, notch1=50, notch2=100)
+#Plot timeseries for avereged signal
 ave2sensors=(y1+y2)/2                                           #Averaging signals
-powerSpectral (ave2sensors)
-ave2sensors = hpException (ave2sensors, 80, Fs, 50, 50, 100)
-rpeaks, average_final, templates = peaksAndAveraged (ave2sensors, True)
+#powerSpectral (ave2sensors)
+rpeaks, average_final, templates = peaksAndAveraged (ave2sensors, False)
 #Peaks detection
 plt.scatter(rpeaks/1000, ave2sensors[rpeaks], c='red')
 plt.plot(times, ave2sensors)
@@ -108,34 +109,40 @@ plt.xlabel("Czas (s)")
 plt.ylabel("Amplituda (pT)")
 plt.grid()
 plt.show()
-plotAvereged (templates, average_final)                         #Averaged signal'''
+pl1 = plotAvereged (templates, average_final)                         #Averaged signal
 
 
 #Plot timeseries for both signals
-y1 = hpException (y1, 80, Fs, 50, 50, 100)
-y2 = hpException (y2, 80, Fs, 50, 50, 100)
 #powerSpectral (y1)
 #powerSpectral (y2)
 rpeaks1, average_final1, templates1 = peaksAndAveraged (y1, False)
 rpeaks2, average_final2, templates2 = peaksAndAveraged (y2, False)
-#Peaks detection
-plt.scatter(rpeaks1/1000, y1[rpeaks1]+60, c='red')
-plt.scatter(rpeaks2/1000, y2[rpeaks2], c='red')
-plt.plot(times, y1+60)
-plt.plot(times, y2)
-#Graphs labels
-plt.xlabel("Czas (s)")
-plt.ylabel("Amplituda (pT)")
-plt.grid()
-plt.show()
-plotAvereged (templates1, average_final1)                                  #Averaged signal
-plotAvereged (templates2, average_final2)
 
 fig, axs = plt.subplots(2)
 fig.suptitle('Sygnały z dwóch czujników')
 axs[0].plot(times, y1, 'tab:orange')
-axs[1].plot(times, y1, 'tab:red')
 axs[0].set(xlabel='Czas (s)', ylabel='Amplituda (pT)')
+axs[0].scatter(rpeaks1/1000, y1[rpeaks1], c='red')
+axs[0].grid()
 axs[1].set(xlabel='Czas (s)', ylabel='Amplituda (pT)')
+axs[1].plot(times, y2, 'tab:red')
+axs[1].scatter(rpeaks2/1000, y2[rpeaks2], c='red')
+axs[1].grid()
+plt.show()
+
+#Averaged signal
+pl2 = plotAvereged (templates1, average_final1)
+pl3 = plotAvereged (templates2, average_final2)
+
+fig, axs = plt.subplots(3)
+ts_tmpl = np.linspace(0, 0.6, templates.shape[1], endpoint=False)
+
+axs[0].plot(ts_tmpl, average_final)
+axs[0].grid()
+axs[1].plot(ts_tmpl, average_final1)
+axs[1].grid()
+axs[2].plot(ts_tmpl, average_final2)
+axs[2].grid()
+plt.show()
 
 
