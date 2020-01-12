@@ -77,7 +77,7 @@ y2 = data[:,3]*0.5
 
 # Clip out good data
 
-#Szerdy zakres szumy
+#Szerszy zakres szumy
 #y1 = y1[30000:80000]
 
 #for presentation
@@ -88,15 +88,20 @@ y2 = data[:,3]*0.5
 #y1 = y1[41000:50000]
 
 #czyba dobrze na 2 kanalach
-y1 = y1[64000:73500]
-y2= y2[64000:73500]
+#y1 = y1[64000:73500]
+#y2= y2[64000:73500]
+
+#wiekszy zakres
+y1 = y1[5500:80000]
+y2 = y2[5500:80000]
+
 times = arange(len(y1))/Fs
 
 # HP filters
-y1 = highFilter (y1, Fs, lowFrequency=1)
-y2 = highFilter (y2, Fs, lowFrequency=0.3)
-y1 = hpException (y1, highf=70, Fs=Fs, Q=50, notch1=50, notch2=100)
-y2 = hpException (y2, highf=80, Fs=Fs, Q=50, notch1=50, notch2=100)
+'''y1 = highFilter (y1, Fs, lowFrequency=1)
+y2 = highFilter (y2, Fs, lowFrequency=0.3)'''
+y1 = allWithOne (y1, lowf = 1, highf=100, Fs=Fs, Q=50, notch1=50, notch2=100)
+y2 = allWithOne (y2, lowf = 0.3, highf=100, Fs=Fs, Q=50, notch1=50, notch2=100)
 #Plot timeseries for avereged signal
 ave2sensors=(y1+y2)/2                                           #Averaging signals
 #powerSpectral (ave2sensors)
@@ -109,8 +114,7 @@ plt.xlabel("Czas (s)")
 plt.ylabel("Amplituda (pT)")
 plt.grid()
 plt.show()
-pl1 = plotAvereged (templates, average_final)                         #Averaged signal
-
+#pl1 = plotAvereged (templates, average_final)                         #Averaged signal
 
 #Plot timeseries for both signals
 #powerSpectral (y1)
@@ -131,18 +135,20 @@ axs[1].grid()
 plt.show()
 
 #Averaged signal
-pl2 = plotAvereged (templates1, average_final1)
-pl3 = plotAvereged (templates2, average_final2)
+#pl2 = plotAvereged (templates1, average_final1)
+#pl3 = plotAvereged (templates2, average_final2)
 
 fig, axs = plt.subplots(3)
 ts_tmpl = np.linspace(0, 0.6, templates.shape[1], endpoint=False)
-
-axs[0].plot(ts_tmpl, average_final)
+axs[0].plot(ts_tmpl, average_final1)
 axs[0].grid()
-axs[1].plot(ts_tmpl, average_final1)
+#axs[0].set_title ('Pierwszy czyjnik')
+axs[1].plot(ts_tmpl, average_final2)
 axs[1].grid()
-axs[2].plot(ts_tmpl, average_final2)
+#axs[1].set_title ('Drugi czyjnik')
+axs[2].plot(ts_tmpl, average_final)
 axs[2].grid()
+#axs[2].set_title ('Uśredniony z obu czujników')
+for ax in axs.flat:
+    ax.set(xlabel='Czas (ms)', ylabel='Amplituda (pT)')
 plt.show()
-
-
