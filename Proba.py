@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from scipy import *
 from scipy import signal
 from scipy.signal import lfilter, freqz, butter, filtfilt
@@ -7,7 +6,6 @@ import matplotlib.pyplot as plt
 from biosppy.signals import ecg
 import numpy as np
 import matplotlib
-
 
 
 Fs = 1000 # Hz
@@ -28,9 +26,14 @@ def highFilter(data, Fs, lowFrequency ):
     b, a = signal.butter(5, normalizedCutoff, btype='high')
     return filtfilt(b, a, data)
 def peaksAndAveraged (signal, visibility):
-    out = ecg.ecg(signal, sampling_rate= Fs, show = visibility)
-    rpeaks = out['rpeaks']
-    templates = out['templates']
+    forTemplates = ecg.ecg(signal, sampling_rate= Fs, show = visibility)
+    filtered = signal
+    # filtered = highFilter(signal, Fs, 5)
+    # filtered = lowFilter(filtered, Fs, 15)
+    forPeaks = ecg.ecg(filtered, sampling_rate=Fs, show=visibility)
+    # rpeaks = ecg.hamilton_segmenter(filtered, Fs)
+    rpeaks = forPeaks['rpeaks']
+    templates = forTemplates['templates']
     average_final = np.average(templates, axis=0)
     return rpeaks, average_final, templates
 def move_figure(f, x, y):
@@ -48,10 +51,9 @@ def move_figure(f, x, y):
 #File loading
 filename = "Tom II MCG.tsv"
 #filename = "janmasny_MKG3.txt"
-#filename = "szumy (1).txt"
 
 data = loadtxt(filename)
-data1 = data[:,1]*2
+data1 = data[:,1]*2.4
 data2 = data[:,3]*0.9
 
 # Clip out good data
@@ -71,29 +73,51 @@ data2 = data[:,3]*0.9
 #y2= y2[64000:73500]
 
 #wiekszy zakres
-yw1 = data1[5500:80000]
-yw2 = data2[5500:80000]
+# yw1 = data1[5500:80000]
+# yw2 = data2[5500:80000]
 
+#Dla 100 cykli
+yw1=data1[1000:97000]
+yw2=data2[1000:97000]
+
+#Dla 50 cykli
+# yw1=data1[1000:47000]
+# yw2=data2[1000:47000]
+
+#Dla 25 cykli
+# yw1=data1[1000:23000]
+# yw2=data2[1000:23000]
+
+#Dla 12 cykli
+# yw1=data1[1000:11200]
+# yw2=data2[1000:11200]
+
+#Dla 6 cykli
+# yw1=data1[1000:6500]
+# yw2=data2[1000:6500]
 
 #Filters
 yw1= highFilter (yw1, Fs, lowFrequency=2)
 yw2 = highFilter (yw2, Fs, lowFrequency=1)
 
-yw1 = notchFitler(yw1, Fs, 50, 1)
+yw1 = notchFitler(yw1, Fs, 50, 2.5)
+yw1 = notchFitler(yw1, Fs, 23, 23)
 yw1 = notchFitler(yw1, Fs, 100, 50)
 
-yw2 = notchFitler(yw2, Fs, 50, 1)
+yw2 = notchFitler(yw2, Fs, 50, 2.5)
 yw2 = notchFitler(yw2, Fs, 60, 20)
 yw2 = notchFitler(yw2, Fs, 100, 50)
 
-yw1 = lowFilter(yw1, Fs, 150)
-yw2 = lowFilter(yw2, Fs, 150)
+yw1 = lowFilter(yw1, Fs, 30)
+yw2 = lowFilter(yw2, Fs, 30)
 
-'''yw1 = lowFilter(yw1, Fs, 45)
-yw2 = lowFilter(yw2, Fs, 45)'''
+# y1=yw1[5500:15500]
+# y2=yw2[5500:15500]
 
-'''y1=yw1[5500:15500]
-y2=yw2[5500:15500]'''
+#Prezentacja
+# y1=yw1[5500:13000]
+# y2=yw2[5500:13000]
+
 y1=yw1
 y2=yw2
 
@@ -161,7 +185,7 @@ for ax in axs.flat:
 plt.show()
 
 
-fig, axs = plt.subplots(1,2, figsize = (19,7))
+fig, axs = plt.subplots(1, 2, figsize = (19,7))
 move_figure(fig, 0, 0)
 #fig.suptitle('Averaged signals')
 axs[0].plot(ts_tmpl, average_final1, 'tab:orange')
