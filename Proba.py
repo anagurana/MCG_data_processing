@@ -143,6 +143,8 @@ rpeaks1, average_final1, templates1 = peaksAndAveraged (y1, False)
 rpeaks2, average_final2, templates2 = peaksAndAveraged (y2, False)
 ts_tmpl = np.linspace(0, 0.6, templates1.shape[1], endpoint=False)
 
+print("Number of cycles= ", templates1.shape[0])
+
 #Ploty
 
 
@@ -174,7 +176,7 @@ plt.show()
 
 fig, axs = plt.subplots(1,2, figsize = (19,7))
 move_figure(fig, 0, 0)
-#fig.suptitle('Nałożone sygnały')
+#fig.suptitle('Overlapping signals')
 for beat in range(0,templates1.shape[0]):
     axs[0].plot(ts_tmpl, templates1[beat,:], 'tab:orange')
 for beat in range(0, templates2.shape[0]):

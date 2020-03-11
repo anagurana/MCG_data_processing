@@ -64,11 +64,11 @@ def plotAvereged (templates, average_final):
     plt.grid()
     plt.show()
 
-filename = "10.01/Kompensacja.txt"
+filename = "Mapowanie+potencjaly_wylowane/Kompensacja.txt"
 data = loadtxt(filename)
 y1 = data[:,1]
 
-file = '10.01/Kompensacja_czujnika.txt'
+file = 'Mapowanie+potencjaly_wylowane/Kompensacja_czujnika.txt'
 data = loadtxt(file)
 x1=data [:,1]
 
@@ -78,14 +78,17 @@ y2=y1[10000:30000]
 y2 = highFilter(y2, 1000, 1)
 y2=(absolute(y2))
 print(mean(y2))
+print (max(y2))
 y3=y1[140000:170000]
 y3 = highFilter(y3, 1000, 1)
 y3=(absolute(y3))
 print(mean(y3))
+print (max(y3))
 y4=y1[246000:276000]
 y4 = highFilter(y4, 1000, 1)
 y4=(absolute(y4))
 print(mean(y4))
+print (max(y4))
 
 x1=x1[10000:30000]
 x1 = highFilter(x1, 1000, 1)

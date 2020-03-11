@@ -1,12 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8612e49f-27d6-4f1b-8b4e-da2e3b67f4d6" name="Default Changelist" comment="" />
+    <list default="true" id="8612e49f-27d6-4f1b-8b4e-da2e3b67f4d6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ECG_processing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mapowanie_Anastasiya.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Mapowanie_P_ANA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kompensacja.py" beforeDir="false" afterPath="$PROJECT_DIR$/Kompensacja.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/Kalibracja_czujnika_wartosci.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/Kompensacja.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/Kompensacja_czujnika.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/meg_anastasiya_spontaniczne_prawagora.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/meg_anastasiya_wywolane_lewagora.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/meg_anastasiya_wywolane_tylsrodkowasrodkowa.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/meg_janek_lewadolna.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/meg_janek_lewagorna.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja12.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg2_anastasiya_pozycja9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_anastasiya_pozycja1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_anastasiya_pozycja2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/mkg_janek_pozycja9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/szumy_popomiarzemkgjanek.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie+potensjaly_wylowane/uwaga_amp_1nanoT_to_10kpikoT_nawykresie.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mapowanie.py" beforeDir="false" afterPath="$PROJECT_DIR$/Mapowanie.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proba.py" beforeDir="false" afterPath="$PROJECT_DIR$/Proba.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="py" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -15,10 +61,21 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1TsMbLx2y20icbVG0GuOG9ul0aD" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Na CD/Praca_dyplomowa/Załączniki/Przetwarzanie_Sygnałów/MCG_processing.py" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\asyag\Desktop\Na CD\Praca_dyplomowa\Załączniki\Przetwarzanie_Sygnałów" />
+      <recent name="C:\Users\asyag\Desktop\praca inzynierska\py" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -32,8 +89,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Proba">
-    <configuration name="Kaz Heart Filter17HzSpectrum" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.MKG_gui">
+    <configuration name="ECG_processing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -45,7 +102,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Kaz Heart Filter17HzSpectrum.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ECG_processing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -54,7 +111,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Proba" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Kompensacja" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -66,7 +123,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Proba.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Kompensacja.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -75,7 +132,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Sylwia Heart Filter17HzSpectrum" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="MKG_gui" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -87,7 +144,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Sylwia Heart Filter17HzSpectrum.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MKG_gui.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -96,7 +153,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tom MCG II" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Mapowanie" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -108,7 +165,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tom MCG II.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Mapowanie.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -117,7 +174,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tom MEG III" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Mapowanie_P_ANA" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -129,7 +186,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tom MEG III.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Mapowanie_P_ANA.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -140,11 +197,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Proba" />
-        <item itemvalue="Python.Kaz Heart Filter17HzSpectrum" />
-        <item itemvalue="Python.Tom MCG II" />
-        <item itemvalue="Python.Sylwia Heart Filter17HzSpectrum" />
-        <item itemvalue="Python.Tom MEG III" />
+        <item itemvalue="Python.MKG_gui" />
+        <item itemvalue="Python.ECG_processing" />
+        <item itemvalue="Python.Mapowanie" />
+        <item itemvalue="Python.Kompensacja" />
+        <item itemvalue="Python.Mapowanie_P_ANA" />
       </list>
     </recent_temporary>
   </component>
@@ -160,5 +217,18 @@
       <updated>1574244421178</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
