@@ -16,9 +16,7 @@ from matplotlib.figure import Figure
 matplotlib.use("TkAgg")
 
 
-#TODO: 1. Add peaks
-# 2. Averaging for
-# 3. Add labels to bp Values
+#TODO: 1. Add labels to bp Values ????
 
 
 def create_filtration_window(data):
@@ -65,11 +63,11 @@ def create_entries(parFrames):
     fsEntry.place(relx=0.65, rely=0.12, relwidth=0.15, relheight=0.1)
     fsEntry.insert(0, 1000)
 
-    Label(parFrames[1], text="Uśrednienie dla                 cykli serca", font='20').place(relx=0.02, rely=0.45,
-                                                                                            relwidth=0.96,
-                                                                                            relheight=0.1)
+    Label(parFrames[1], text="Uśrednienie dla", font='20').place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.1)
     heartBeats = Entry(parFrames[1], state="readonly", font='Helvetica 18 bold', justify = CENTER)
-    heartBeats.place(relx=0.5, rely=0.45, relwidth=0.1, relheight=0.1)
+    heartBeats.place(relx=0.5, rely=0.2, relwidth=0.1, relheight=0.1)
+    Label(parFrames[1], text="cykli serca", font='20').place(relx=0.6, rely=0.2, relwidth=0.2, relheight=0.1)
+
 
     return fsEntry, heartBeats
 def create_checkbuttons(frame):
@@ -110,7 +108,7 @@ def create_checkbuttons(frame):
     checkValues = [hpVar, lpVar]
     passband = [hpValue, lpValue]
     bpValues = [50, 100, 150, 35, 45, 55]
-    dictionary = create_BP_entries(bpValues, frame, bpCheck)
+    dictionary = create_BP_entries(bpValues, frame)
     dictionary = set_bp_values(dictionary)
     return checkValues, dictionary, passband
 def global_change_state(bpVar, dictionary):
@@ -125,7 +123,7 @@ def changing_states(dictionary, bpCheck):
             bpCheck.select()
         else:
             bpCheck.deselect()
-def create_BP_entries(bpValues, filtersParF, bpCheck):
+def create_BP_entries(bpValues, filtersParF):
     dictionary = {}
     n = 0
     for i in bpValues:
@@ -193,7 +191,7 @@ def create_plot_figures(plotFrames):
     return figures, plots
 def create_apply_button(frame, data, fsEntry, passbandEntry, checkValues, dictionary, figures, plots,heartBeats):
     applyB = Button(frame, text="Zastosuj", font=15, command=lambda: modify_plots(data, fsEntry, passbandEntry, checkValues, dictionary, figures, plots,heartBeats))
-    applyB.place(relx=0.2, rely=0.02, relwidth=0.6, relheight=0.1)
+    applyB.place(relx=0.2, rely=0, relwidth=0.6, relheight=0.1)
 def highFilter(data, Fs, lowFrequency ):
     nyquistFrequency = Fs / 2.
     normalizedCutoff = lowFrequency / nyquistFrequency
@@ -222,7 +220,7 @@ def modify_data(data, Fs, passbandEntry, checkValues, dictionary):
     for x in dictionary.keys():
         if dictionary[x]["Button"].var.get():
             bpValue = x
-            width = int(dictionary[x]["Value"].get())
+            width = float(dictionary[x]["Value"].get())
             data = notchFitler(data, Fs, bpValue, width)
 
     return data
@@ -269,13 +267,10 @@ def draw_averaging_plot(average_final, ts_tmpl, mainFigure, drawn_plot ):
     mainFigure.clear()
     mainFigure.plot(ts_tmpl, average_final, 'tab:blue')
     drawn_plot.draw()
-
-
 def main ():
     filename = "Mapowanie+potencjaly_wylowane/mkg_janek_pozycja4.txt"
     data = loadtxt(filename)
     data=data[:, 1]*-1
     create_filtration_window(data)
-
 main()
 
