@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8612e49f-27d6-4f1b-8b4e-da2e3b67f4d6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MKG_app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MKG_app_w1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_filtering_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/scratch_filtering_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MKG_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/MKG_app.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,6 +30,7 @@
   <component name="PropertiesComponent">
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Na CD/Praca_dyplomowa/Załączniki/Przetwarzanie_Sygnałów/MCG_processing.py" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -51,27 +52,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.MKG_app">
-    <configuration name="ECG_processing" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="py" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ECG_processing.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="MKG_GUI_Filtering" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="py" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -106,6 +86,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MKG_app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="MKG_app_w1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="py" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MKG_app_w1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -159,10 +160,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.MKG_app" />
+        <item itemvalue="Python.MKG_app_w1" />
         <item itemvalue="Python.MKG_gui" />
         <item itemvalue="Python.scratch_filtering_window" />
         <item itemvalue="Python.MKG_GUI_Filtering" />
-        <item itemvalue="Python.ECG_processing" />
       </list>
     </recent_temporary>
   </component>
@@ -191,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584735715660</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Gui dividing into classes">
+      <created>1584832610375</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1584832610375</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -210,6 +218,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="GUI" />
     <MESSAGE value="GUI_working_version" />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI_working_version" />
+    <MESSAGE value="Gui dividing into classes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Gui dividing into classes" />
   </component>
 </project>
