@@ -1,10 +1,9 @@
 from tkinter import *
-from tkinter import ttk
-from ttkthemes import themed_tk as tk
+from tkinter import messagebox as m_box
 
 from scipy import *
 from scipy import signal
-from scipy.signal import lfilter, freqz, butter, filtfilt
+from scipy.signal import filtfilt
 from psd import *
 from biosppy.signals import ecg
 import numpy as np
@@ -13,12 +12,6 @@ import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 matplotlib.use("TkAgg")
-
-# TODO:
-#  2. All the entries should be proper values (Limits)
-#  4. Check what is going on with fs_value
-#  7. All variables in function must be lowercase
-#  8. Label doesn't have justify
 
 
 class MKGDesigner:
@@ -33,12 +26,12 @@ class MKGDesigner:
         self.fill_parameters_frame()
         self.fill_plot_frames()
         self.create_apply_button()
-
-        self.send_plot_frames()
-
-        self.mdf.modify_data()
-
+        self.first_run()
         self.create_average_label()
+
+    def first_run(self):
+        self.send_plot_frames()
+        self.send_all_values_to_modification()
 
     def create_frames(self, window):
         self.filtersParFrame = Frame(window, bg='#b6d5d6', bd=10)
@@ -46,8 +39,8 @@ class MKGDesigner:
         self.averageParFrame = Frame(window, bg='#b6d5d6', bd=0)
         self.averageParFrame.place(relx=0, rely=0.5, relwidth=0.25, relheight=0.5)
 
-        backFrame = Frame(window, bg='#b6d5d6')
-        backFrame.place(relx=0.25, rely=0, relwidth=0.77, relheight=1)
+        back_frame = Frame(window, bg='#b6d5d6')
+        back_frame.place(relx=0.25, rely=0, relwidth=0.77, relheight=1)
 
         self.signalPlotFrame = Frame(window, bg='#b6d5d6', bd=10)
         self.signalPlotFrame.place(relx=0.25, rely=0.01, relwidth=0.375, relheight=0.49)
@@ -58,20 +51,23 @@ class MKGDesigner:
         self.averagePlotFrame = Frame(window, bg='#b6d5d6', bd = 10)
         self.averagePlotFrame.place(relx=0.62, rely=0.49, relwidth=0.375, relheight=0.5)
         
-    def create_fs_field(self):
-        fsLabel = Label(self.filtersParFrame, text="Częstotliwość próbkowania", font='15', anchor = W, padx=20)
-        fsLabel.place(relx=0.02, rely=0.12, relwidth=0.85, relheight=0.1)
-        self.fsEntry = Entry(self.filtersParFrame, font='15', justify=CENTER)
-        self.fsEntry.place(relx=0.65, rely=0.135, relwidth=0.22, relheight=0.07)
-        self.fsEntry.insert(0, self.mdf.fsValue)
-        fsLabel = Label(self.filtersParFrame, text="Hz", font='15', justify=LEFT)
-        fsLabel.place(relx=0.87, rely=0.12, relwidth=0.11, relheight=0.1)
-        
+    def fill_parameters_frame(self):
+        filters_label = Label(self.filtersParFrame, text="Filtry: ", font='Times  20 bold')
+        filters_label.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.2)
+
+        self.create_filters_par()
+
+        empty_space_end = Label(self.filtersParFrame).place(relx=0.02, rely=0.975, relwidth=0.96, relheight=0.025)
+
+    def create_filters_par(self):
+        self.hp_par_entries()
+        self.lp_par_entries()
+        self.bp_par_entries()
+
     def hp_par_entries(self):
-        self.hpCheckVar = BooleanVar(value=True)
-        hp_check = Checkbutton(self.filtersParFrame, text="górnoprzepustowy:", font=15, anchor=CENTER, padx=15,
-                              variable=self.hpCheckVar)
-        hp_check.var = self.hpCheckVar
+        hp_check = Checkbutton(self.filtersParFrame, text="górnoprzepustowy:", font=("Helvetica", 11, "bold"),
+                               anchor=CENTER, padx=15, variable=self.mdf.hpCheckVar)
+        hp_check.var = self.mdf.hpCheckVar
         hp_check.place(relx=0.02, rely=0.225, relwidth=0.96, relheight=0.1)
 
         hp_order_label = Label(self.filtersParFrame, text="rząd", font=("", 11), anchor=CENTER)
@@ -90,10 +86,9 @@ class MKGDesigner:
         hp_hz_label.place(relx=0.87, rely=0.325, relwidth=0.11, relheight=0.05)
 
     def lp_par_entries(self):
-        self.lpCheckVar = BooleanVar(value=True)
-        lp_check = Checkbutton(self.filtersParFrame, text="dolnoprzepustowy:", font=15, anchor=CENTER, padx=15,
-                              variable=self.lpCheckVar)
-        lp_check.var = self.lpCheckVar
+        lp_check = Checkbutton(self.filtersParFrame, text="dolnoprzepustowy:", font=("Helvetica", 11, "bold"),
+                               anchor=CENTER, padx=15, variable=self.mdf.lpCheckVar)
+        lp_check.var = self.mdf.lpCheckVar
         lp_check.place(relx=0.02, rely=0.375, relwidth=0.96, relheight=0.1)
 
         lp_order_label = Label(self.filtersParFrame, text="rząd", font=("", 11), anchor=CENTER)
@@ -112,52 +107,30 @@ class MKGDesigner:
         lp_hz_label.place(relx=0.87, rely=0.475, relwidth=0.11, relheight=0.05)
 
     def bp_par_entries(self):
-        bpCheckVar = BooleanVar(value=True)
-        bp_check = Checkbutton(self.filtersParFrame, text="środkowozaporowy: ", font=15, anchor=CENTER, padx=15,
-                              variable=bpCheckVar,
-                              command=lambda: self.mdf.checkbox_change_state(bpCheckVar))
-        bp_check.var = bpCheckVar
+        bp_check = Checkbutton(self.filtersParFrame, text="środkowozaporowy: ", font=("Helvetica", 11, "bold"),
+                               anchor=CENTER, padx=15, variable=self.mdf.bpCheckVar,
+                               command=self.mdf.checkbox_change_state)
+        bp_check.var = self.mdf.bpCheckVar
         bp_check.place(relx=0.02, rely=0.525, relwidth=0.96, relheight=0.1)
-        bpFreqLabel = Label(self.filtersParFrame, text="Częstotliwość środkowa", font='Helvetica 11')
-        bpFreqLabel.place(relx=0.02, rely=0.625, relwidth=0.48, relheight=0.05)
-        bpWidthLabel = Label(self.filtersParFrame, text="Szerokość pasma", font='Helvetica 11')
-        bpWidthLabel.place(relx=0.505, rely=0.625, relwidth=0.475, relheight=0.05)
+        bp_freq_label = Label(self.filtersParFrame, text="Częstotliwość środkowa", font='Helvetica 11')
+        bp_freq_label.place(relx=0.02, rely=0.605, relwidth=0.48, relheight=0.065)
+        bp_width_label = Label(self.filtersParFrame, text="Szerokość pasma", font='Helvetica 11')
+        bp_width_label.place(relx=0.505, rely=0.605, relwidth=0.475, relheight=0.065)
 
         self.create_bp_entries()
 
-    def create_filters_par(self):
-        self.hp_par_entries()
-        self.lp_par_entries()
-        self.bp_par_entries()
-
-    def fill_parameters_frame(self):
-        filtersLabel = Label(self.filtersParFrame, text="Filtry: ", font='Helvetica 18 bold underline')
-        filtersLabel.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.1)
-    
-        self.create_fs_field()
-        self.create_filters_par()
-
-        empty_space_end = Label(self.filtersParFrame).place(relx=0.02, rely=0.98, relwidth=0.96, relheight=0.02)
-
-    def create_average_label(self):
-        heart_beats_label = Label(self.averageParFrame, text='Uśrednienie dla ' + self.mdf.heart_beats_quantity + ' cykli '
-                                                                                                          'serca',
-                                  font='20', bg='white')
-        heart_beats_label.place(relx=0.2, rely=0.2, relwidth=0.6, relheight=0.1)
-
     def create_bp_entries(self):
-
         n = 0
         for i in self.mdf.bpValues:
-            self.mdf.dictionary[i] = {}
-            bpVar = BooleanVar(value=True)
-            self.mdf.dictionary[i]["Button"] = Checkbutton(self.filtersParFrame, text=f"{i} Hz".rjust(6, ' '),
-                                                           font=("", 11), width=50, anchor=W, padx=50, variable=bpVar)
-            self.mdf.dictionary[i]["Button"].var = bpVar
-            self.mdf.dictionary[i]["Button"].select()
-            self.mdf.dictionary[i]["Button"].place(relx=0.02, rely=0.675 + n, relwidth=0.48, relheight=0.05)
-            self.mdf.dictionary[i]["Value"] = Entry(self.filtersParFrame, font=("", 11), justify=CENTER)
-            self.mdf.dictionary[i]["Value"].place(relx=0.505, rely=0.675 + n, relwidth=0.37, relheight=0.05)
+            self.mdf.bpDictionary[i] = {}
+            bp_var = BooleanVar(value=True)
+            self.mdf.bpDictionary[i]["Button"] = Checkbutton(self.filtersParFrame, text=f"{i} Hz".rjust(6, ' '),
+                                                             font=("", 11), width=50, anchor=W, padx=50, variable=bp_var)
+            self.mdf.bpDictionary[i]["Button"].var = bp_var
+            self.mdf.bpDictionary[i]["Button"].select()
+            self.mdf.bpDictionary[i]["Button"].place(relx=0.02, rely=0.675 + n, relwidth=0.48, relheight=0.05)
+            self.mdf.bpDictionary[i]["Value"] = Entry(self.filtersParFrame, font=("", 11), justify=CENTER)
+            self.mdf.bpDictionary[i]["Value"].place(relx=0.505, rely=0.675 + n, relwidth=0.37, relheight=0.05)
             bp_width = Label(self.filtersParFrame, font=("", 11), text="Hz")
             bp_width.place(relx=0.875, rely=0.675 + n, relwidth=0.105, relheight=0.05)
             if i == 150:
@@ -166,61 +139,61 @@ class MKGDesigner:
                 n = n + .05
         self.mdf.set_bp_values()
 
+    def create_average_label(self):
+        heart_beats_label = Label(self.averageParFrame, text='Uśrednienie dla ' + self.mdf.heartBeatsQuantity +
+                                                             ' cykli serca',font='20', bg='white')
+        heart_beats_label.place(relx=0.2, rely=0.15, relwidth=0.6, relheight=0.1)
+
     def fill_plot_frames(self):
-        signalsFigure = Figure(figsize=(0.5, 0.5))
-        ax1 = signalsFigure.add_subplot(111)
-        plotSignals = FigureCanvasTkAgg(signalsFigure, self.signalPlotFrame)
-        plotSignals.draw()
-        plotSignals.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        NavigationToolbar2Tk(plotSignals, self.signalPlotFrame).update()
-        plotSignals._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
+        signals_figure = Figure(figsize=(0.5, 0.5))
+        ax1 = signals_figure.add_subplot(111)
+        plot_signals = FigureCanvasTkAgg(signals_figure, self.signalPlotFrame)
+        plot_signals.draw()
+        plot_signals.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        NavigationToolbar2Tk(plot_signals, self.signalPlotFrame).update()
+        plot_signals._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
 
-        powerFigure = Figure(figsize=(0.5, 0.5))
-        ax2 = powerFigure.add_subplot(111)
-        plotPower = FigureCanvasTkAgg(powerFigure, self.powerPlotFrame)
-        plotPower.draw()
-        plotPower.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        NavigationToolbar2Tk(plotPower, self.powerPlotFrame).update()
-        plotPower._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
+        power_figure = Figure(figsize=(0.5, 0.5))
+        ax2 = power_figure.add_subplot(111)
+        plot_power = FigureCanvasTkAgg(power_figure, self.powerPlotFrame)
+        plot_power.draw()
+        plot_power.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        NavigationToolbar2Tk(plot_power, self.powerPlotFrame).update()
+        plot_power._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
 
-        butterflyFigure = Figure(figsize=(0.5, 0.5))
-        ax3 = butterflyFigure.add_subplot(111)
-        plotButterfly = FigureCanvasTkAgg(butterflyFigure, self.butterflyPlotFrame)
-        plotButterfly.draw()
-        plotButterfly.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        NavigationToolbar2Tk(plotButterfly, self.butterflyPlotFrame).update()
-        plotButterfly._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
+        butterfly_figure = Figure(figsize=(0.5, 0.5))
+        ax3 = butterfly_figure.add_subplot(111)
+        plot_butterfly = FigureCanvasTkAgg(butterfly_figure, self.butterflyPlotFrame)
+        plot_butterfly.draw()
+        plot_butterfly.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        NavigationToolbar2Tk(plot_butterfly, self.butterflyPlotFrame).update()
+        plot_butterfly._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
 
-        averageFigure = Figure(figsize=(0.5, 0.5))
-        ax4 = averageFigure.add_subplot(111)
-        plotAverage = FigureCanvasTkAgg(averageFigure, self.averagePlotFrame)
-        plotAverage.draw()
-        plotAverage.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        NavigationToolbar2Tk(plotAverage, self.averagePlotFrame).update()
-        plotAverage._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
+        average_figure = Figure(figsize=(0.5, 0.5))
+        ax4 = average_figure.add_subplot(111)
+        plot_average = FigureCanvasTkAgg(average_figure, self.averagePlotFrame)
+        plot_average.draw()
+        plot_average.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        NavigationToolbar2Tk(plot_average, self.averagePlotFrame).update()
+        plot_average._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
 
         self.ax = [ax1, ax2, ax3, ax4]
-        self.plots = [plotSignals, plotPower, plotButterfly, plotAverage]
+        self.plots = [plot_signals, plot_power, plot_butterfly, plot_average]
 
     def create_apply_button(self):
-
-        # applyB = ttk.Button(self.averageParFrame, text="Zastosuj", command=self.send_all_values_to_modification)
-        applyB = Button(self.averageParFrame, text="Zastosuj", command=self.send_all_values_to_modification, font='Tahoma  15 bold', bg='white')
-        applyB.place(relx=0.2, rely=0.01, relwidth=0.6, relheight=0.1)
+        apply_button = Button(self.averageParFrame, text="Zastosuj", command=self.send_all_values_to_modification,
+                              font='Tahoma  15 bold', bg='white')
+        apply_button.place(relx=0.2, rely=0.01, relwidth=0.6, relheight=0.1)
 
     def send_all_values_to_modification(self):
 
-        fs = int(self.fsEntry.get())
-        hp_check = self.hpCheckVar.get()
-        hp_value = float(self.hpEntryValue.get())
-        hp_order = int(self.hpOrderValue.get())
+        hp_value = self.hpEntryValue.get()
+        hp_order = self.hpOrderValue.get()
 
-        lp_check = self.lpCheckVar.get()
-        lp_value = float(self.lpEntryValue.get())
-        lp_order = int(self.lpOrderValue.get())
+        lp_value = self.lpEntryValue.get()
+        lp_order = self.lpOrderValue.get()
 
-        self.mdf.set_all_values(fs, hp_check, hp_value, hp_order, lp_check, lp_value, lp_order)
-        self.mdf.modify_data()
+        self.mdf.set_all_values_and_modify(hp_value, hp_order, lp_value, lp_order)
 
     def send_plot_frames(self):
         self.mdf.get_plot_frames(self.ax, self.plots)
@@ -228,85 +201,149 @@ class MKGDesigner:
 
 class DataModificator:
 
-    def __init__(self, data, initial_fs):
+    def __init__(self, data, fs_value):
 
         self.data = data
-        self.dictionary = {}
-        self.fsValue = 1000
+        self.fsValue = fs_value
+        self.hpCheckVar = BooleanVar(value=True)
         self.hpValue = 1.
-        self.lpValue = 150.
         self.hpOrderValue = 5
+        self.lpCheckVar = BooleanVar(value=True)
+        self.lpValue = 150.
         self.lpOrderValue = 4
+        self.bpCheckVar = BooleanVar(value=True)
+        self.bpDictionary = {}
         self.bpValues = [50, 100, 150, 35, 45, 55]
         self.bpDefault50 = 4.
         self.bpDefault = 2.
-        self.hpCheck = True
-        self.lpCheck = True
-        self.initialFs = initial_fs
 
     def set_bp_values(self):
 
-        for x in self.dictionary.keys():
+        for x in self.bpDictionary.keys():
             if x == 50:
-                self.dictionary[x]["Value"].insert(0, self.bpDefault50)
+                self.bpDictionary[x]["Value"].insert(0, self.bpDefault50)
             else:
-                self.dictionary[x]["Value"].insert(0, self.bpDefault)
+                self.bpDictionary[x]["Value"].insert(0, self.bpDefault)
 
-    def checkbox_change_state(self, bpCheckVar):
-        for x in self.dictionary.keys():
-            if bpCheckVar.get():
-                self.dictionary[x]["Button"].select()
-            elif not bpCheckVar.get():
-                self.dictionary[x]["Button"].deselect()
+    def checkbox_change_state(self):
+        for x in self.bpDictionary.keys():
+            if self.bpCheckVar.get():
+                self.bpDictionary[x]["Button"].select()
+            elif not self.bpCheckVar.get():
+                self.bpDictionary[x]["Button"].deselect()
 
-    def set_all_values(self, fs, hp_check, hp_value, hp_order, lp_check, lp_value, lp_order):
-        self.fsValue = fs
+    def check_the_data_type(self):
+        error_text = ""
+        try:
+            self.hpOrderValue = int(self.hpOrderValue)
+            self.lpOrderValue = int(self.lpOrderValue)
+        except ValueError:
+            error_text = error_text + "► Rząd filtrów powinien być liczbą całkowitą\n"
+        try:
+            self.hpValue = float(self.hpValue)
+            self.lpValue = float(self.lpValue)
+        except ValueError:
+            error_text = error_text + "► Częstotliwośc graniczna filtrów powinna być liczbą\n"
+        try:
+            for x in self.bpDictionary.keys():
+                self.bpDictionary[x]["WidthValues"] = float(self.bpDictionary[x]["Value"].get())
+        except ValueError:
+            error_text = error_text + "► Szerokość pasma powinna być wyrażona liczbą\n"
+        if error_text == "":
+            return True
+        else:
+            m_box.showerror('Błędny typ danych', f'{error_text}\nWprowadż dane jeszcze raz!')
+            return False
 
-        self.hpCheck = hp_check
+    def check_the_correctness(self):
+        error_text = ""
+        nyquist_frequency = self.fsValue / 2
+        if self.hpCheckVar.get():
+            if 0 < self.hpValue <= 4:
+                high_order_limit = self.hpValue + 5
+            elif 5 <= self.hpValue <= 7:
+                high_order_limit = 9
+            elif 8 <= self.hpValue <= 10:
+                high_order_limit = 10
+            elif 11 <= self.hpValue <= 14:
+                high_order_limit = 11
+            elif 14 <= self.hpValue <= 20:
+                high_order_limit = 12
+            else:
+                high_order_limit = 12
+                error_text = error_text + "► Wartość częstotliwości granicznej filtru \n    górnoprzepustowego " \
+                                          "powinna mieścić się \n    w przedziale (0, 20] Hz\n "
+
+            if self.hpOrderValue < 1 or self.hpOrderValue > high_order_limit:
+                error_text = error_text + f"► Rząd filtru górnoprzepustowego znajduje się \n     poza dopuszczalnym " \
+                                          f"przedziałem [1, {high_order_limit}]\n"
+        if self.lpCheckVar.get():
+            if self.lpValue <= self.hpValue or self.lpValue > 200:
+                error_text = error_text + f"► Wartość częstotliwości granicznej filtru \n    dolnoprzepustowego " \
+                                          f"powinna mieścić się \n    w przedziale ({self.hpValue}, " \
+                                          f"{200}] Hz\n "
+            high_order_limit = int(self.lpValue * 0.3)
+            if self.lpOrderValue < 1 or self.lpOrderValue > high_order_limit:
+                error_text = error_text + f"► Rząd filtru dolnoprzepustowego znajduje się \n     poza dopuszczalnym " \
+                                          f"przedziałem [1, {high_order_limit}]\n"
+        for x in self.bpDictionary.keys():
+            if self.bpDictionary[x]["Button"].var.get():
+                if self.bpDictionary[x]["WidthValues"] <= 0 or self.bpDictionary[x]["WidthValues"] >= nyquist_frequency:
+                    error_text = error_text + f"► Szerokość pasma dla częstotliwości środkowej = {x} \n    filtru " \
+                                              f"środkowozaporowego znajduje się poza \n    dopuszczalnym przedziałem " \
+                                              f"(0, {nyquist_frequency}) Hz\n "
+        if error_text == "":
+            return True
+        else:
+            m_box.showerror('Błednie wprowadzone dane!', f'{error_text}\nWprowadż dane jeszcze raz!')
+            return False
+
+    def set_all_values_and_modify(self, hp_value, hp_order, lp_value, lp_order):
         self.hpValue = hp_value
         self.hpOrderValue = hp_order
 
-        self.lpCheck = lp_check
         self.lpValue = lp_value
         self.lpOrderValue = lp_order
+
+        if self.check_the_data_type() and self.check_the_correctness():
+            self.modify_data()
 
     def get_plot_frames(self, ax, plots):
         self.ax = ax
         self.plots = plots
 
     def modify_data(self):
-
         self.modified_data = self.data
-        if self.hpCheck:
+        if self.hpCheckVar.get():
             self.high_filter()
-        if self.lpCheck:
+        if self.lpCheckVar.get():
             self.low_filter()
-        for x in self.dictionary.keys():
-            if self.dictionary[x]["Button"].var.get():
-                bpValue = x
-                width = float(self.dictionary[x]["Value"].get())
-                self.notch_fitler(bpValue, width)
-        rpeaks, average_final, templates = self.peaks_and_averaged(visibility=False)
-        self.heart_beats_quantity = str(templates.shape[0])
+        for x in self.bpDictionary.keys():
+            if self.bpDictionary[x]["Button"].var.get():
+                bp_value = x
+                width = float(self.bpDictionary[x]["Value"].get())
+                self.notch_fitler(bp_value, width)
+        rpeaks, average_final, templates = self.peaks_and_averaged()
+        self.heartBeatsQuantity = str(templates.shape[0])
         self.modify_plots(rpeaks, average_final, templates)
 
     def high_filter(self):
-        nyquistFrequency = self.fsValue / 2.
-        normalizedCutoff = self.hpValue / nyquistFrequency
-        b, a = signal.butter(self.hpOrderValue, normalizedCutoff, btype='high')
+        nyquist_frequency = self.fsValue / 2.
+        normalized_cutoff = self.hpValue / nyquist_frequency
+        b, a = signal.butter(self.hpOrderValue, normalized_cutoff, btype='high')
         self.modified_data = filtfilt(b, a, self.modified_data)
 
     def low_filter(self):
-        nyquistFrequency = self.fsValue / 2.
-        normalizedCutoff = self.lpValue / nyquistFrequency
-        b, a = signal.butter(self.lpOrderValue, normalizedCutoff, btype='low')
-        self.modified_data =  filtfilt(b, a, self.modified_data)
+        nyquist_frequency = self.fsValue / 2.
+        normalized_cutoff = self.lpValue / nyquist_frequency
+        b, a = signal.butter(self.lpOrderValue, normalized_cutoff, btype='low')
+        self.modified_data = filtfilt(b, a, self.modified_data)
 
     def notch_fitler(self, frequency, width):
-        nyquistFrequency = self.fsValue / 2.
-        normalizedCutoff = frequency / nyquistFrequency
+        nyquist_frequency = self.fsValue / 2.
+        normalized_cutoff = frequency / nyquist_frequency
         Q = frequency / width
-        b, a = signal.iirnotch(w0=normalizedCutoff, Q=Q)
+        b, a = signal.iirnotch(w0=normalized_cutoff, Q=Q)
         self.modified_data = signal.filtfilt(b, a, self.modified_data)
 
     def modify_plots(self, rpeaks, average_final, templates):
@@ -317,21 +354,21 @@ class DataModificator:
         self.draw_butterfly_plot(2, templates, ts_tmpl)
         self.draw_averaging_plot(3, average_final, ts_tmpl)
 
-    def peaks_and_averaged (self, visibility):
-        ecgData = ecg.ecg(self.modified_data, sampling_rate=self.initialFs, show=visibility)
-        rpeaks = ecgData['rpeaks']
-        templates = ecgData['templates']
+    def peaks_and_averaged (self):
+        ecg_data = ecg.ecg(self.modified_data, sampling_rate=self.fsValue, show=False)
+        rpeaks = ecg_data['rpeaks']
+        templates = ecg_data['templates']
         average_final = np.average(templates, axis=0)
         return rpeaks, average_final, templates
 
     def draw_signal(self, figure_position, rpeaks):
-        times = arange(len(self.modified_data)) / self.initialFs
+        times = arange(len(self.modified_data)) / self.fsValue
         self.ax[figure_position].clear()
         self.ax[figure_position].set_title('Sygnał MKG', fontsize=12)
         self.ax[figure_position].set_xlabel('Czas [s]', fontsize=7, labelpad=0)
         self.ax[figure_position].set_ylabel('Amplituda [pT]', fontsize=7, labelpad=0)
         self.ax[figure_position].plot(times, self.modified_data)
-        self.ax[figure_position].scatter(rpeaks/self.initialFs, self.modified_data[rpeaks], c='red')
+        self.ax[figure_position].scatter(rpeaks/self.fsValue, self.modified_data[rpeaks], c='red')
 
         self.plots[figure_position].draw()
 
@@ -347,7 +384,7 @@ class DataModificator:
 
     def draw_butterfly_plot(self, figure_position, templates, ts_tmpl):
         self.ax[figure_position].clear()
-        self.ax[figure_position].set_title('Przebieg ' + self.heart_beats_quantity + ' cykli serca', fontsize=12)
+        self.ax[figure_position].set_title('Przebieg ' + self.heartBeatsQuantity + ' cykli serca', fontsize=12)
         self.ax[figure_position].set_xlabel('Czas [s]', fontsize=7, labelpad=0)
         self.ax[figure_position].set_ylabel('Amplituda [pT]', fontsize=7, labelpad=0)
         for beat in range(0, templates.shape[0]):
@@ -366,24 +403,10 @@ class DataModificator:
         self.plots[figure_position].draw()
 
 
-def start_program(window, data, initial_fs):
-
-    # window = tk.ThemedTk()
-    # print(window.get_themes())
-    # window.set_theme('plastik')
-    # window.geometry("1500x800")
-
-    modificator = DataModificator(data, initial_fs)
+def start_program(window, data, fsValue):
+    modificator = DataModificator(data, fsValue)
     MKGDesigner(modificator, window)
 
-window = Tk()
-window.geometry("1500x800")
-filename = "Mapowanie+potencjaly_wylowane/mkg_janek_pozycja4.txt"
-data = loadtxt(filename)
-data = data[:, 1] *(-1)
-initial_fs = 1000
-start_program(window, data, initial_fs)
-window.mainloop()
 
 
 
