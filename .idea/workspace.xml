@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8612e49f-27d6-4f1b-8b4e-da2e3b67f4d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MKG_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/MKG_app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MKG_app_w1.py" beforeDir="false" afterPath="$PROJECT_DIR$/MKG_app_w1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sylwia Heart Filter17HzSpectrum.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sylwia Heart.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/janmasny_MEG.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -206,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585577701870</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="GUI Before Vova's comments">
+      <created>1585738451876</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1585738451876</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -227,6 +235,7 @@
     <MESSAGE value="GUI_working_version" />
     <MESSAGE value="Gui dividing into classes" />
     <MESSAGE value="GUI Before fs deleting" />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI Before fs deleting" />
+    <MESSAGE value="GUI Before Vova's comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="GUI Before Vova's comments" />
   </component>
 </project>
