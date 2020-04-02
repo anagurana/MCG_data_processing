@@ -1,16 +1,13 @@
+import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+import numpy as np
+from scipy import *
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox as m_box
-
 from FilteringWindow import FilteringWindowDesigner, FiltrationWindowDataModificator
-
-from scipy import *
-import numpy as np
-import matplotlib
-
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
 matplotlib.use("TkAgg")
 
 
