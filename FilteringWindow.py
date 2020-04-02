@@ -14,7 +14,7 @@ from matplotlib.figure import Figure
 matplotlib.use("TkAgg")
 
 
-class MKGDesigner:
+class FilteringWindowDesigner:
 
     def __init__(self, modificator, filtering_window):
         self.mdf = modificator
@@ -199,7 +199,7 @@ class MKGDesigner:
         self.mdf.get_plot_frames(self.ax, self.plots)
 
 
-class DataModificator:
+class FiltrationWindowDataModificator:
 
     def __init__(self, data, fs_value):
 
@@ -401,12 +401,3 @@ class DataModificator:
         self.ax[figure_position].plot(ts_tmpl, average_final, 'tab:red')
 
         self.plots[figure_position].draw()
-
-
-def start_program(window, data, fsValue):
-    modificator = DataModificator(data, fsValue)
-    MKGDesigner(modificator, window)
-
-
-
-

@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox as m_box
 
-from MKG_app import start_program
+from FilteringWindow import FilteringWindowDesigner, FiltrationWindowDataModificator
 
 from scipy import *
 import numpy as np
@@ -14,21 +14,21 @@ from matplotlib.figure import Figure
 matplotlib.use("TkAgg")
 
 
-class AppDesigner:
+class ReadingWindowDesigner:
     def __init__(self, modificator, window):
         self.window = window
         self.modificator = modificator
-        self.window_designing()
-
+        ax, plot_figure = self.window_designing()
+        self.modificator.set_plot_frames(ax, plot_figure)
+        
     def window_designing(self):
         self.create_frames()
         self.design_par_frame()
-        self.design_plot_frame()
-        self.send_plot_frames()
+        ax, plot_figure = self.design_plot_frame()
         self.design_open_frame()
+        return ax, plot_figure
 
     def create_frames(self):
-
         self.fileFrame = LabelFrame(self.window)
         self.fileFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
         self.plotFrame = Frame(self.window)
@@ -45,7 +45,6 @@ class AppDesigner:
         scaling_label.place(relx=0.05, rely=0.3, relwidth=0.2, relheight=0.2)
         self.scalingRateEntry = Entry(self.modFrame, font=15, justify=CENTER, state = 'readonly')
         self.scalingRateEntry.place(relx=0.25, rely=0.3, relwidth=0.2, relheight=0.2)
-
         length_label = Label(self.modFrame, text="Długość", font=15)
         length_label.place(relx=0.05, rely=0.5, relwidth=0.2, relheight=0.2)
         self.lengthFrom = Entry(self.modFrame, font=15, justify=CENTER, state = 'readonly')
@@ -62,8 +61,35 @@ class AppDesigner:
                                   command=self.send_modified_data)
         self.applyButton.place(relx=0.5, rely=0.3, relwidth=0.2, relheight=0.4)
         self.nextButton = Button(self.modFrame, text="Przejdź do filtracji   →", font='Tahoma 16 bold', state=DISABLED,
-                                 bg="white", command=self.open_filtration_window)
+                                 bg="white", command=self.create_filtration_window)
         self.nextButton.place(relx=0.75, rely=0.3, relwidth=0.2, relheight=0.4)
+
+    def create_filtration_window(self):
+        filtration_window = tk.Toplevel(self.window)
+        filtration_window.geometry("1500x800")
+        filtration_window.title("Filtracja sygnału MKG")
+        filtration_window.minsize(1400, 600)
+
+        FilteringWindowDesigner(FiltrationWindowDataModificator(self.modificator.modified_data, self.fs), 
+                                filtration_window)
+
+    def send_modified_data(self):
+        scaling_rate = self.scalingRateEntry.get()
+        t1 = self.lengthFrom.get()
+        t2 = self.lengthTo.get()
+
+        self.modificator.set_all_data(scaling_rate, t1, t2, self.nextButton)
+
+    def design_plot_frame(self):
+        f = Figure(figsize=(5, 5), dpi=100)
+        ax = f.add_subplot(111)
+        plot_figure = FigureCanvasTkAgg(f, self.plotFrame)
+        plot_figure.draw()
+        plot_figure.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        toolbar = NavigationToolbar2Tk(plot_figure, self.plotFrame)
+        toolbar.update()
+        plot_figure._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
+        return ax, plot_figure
 
     def design_open_frame(self):
         initial_fs_label = Label(self.fileFrame, text="Częstotliwość próbkowania", font=15,  borderwidth=2,
@@ -74,7 +100,7 @@ class AppDesigner:
         hz_label = Label(self.fileFrame, font=15, text="Hz", bg="#dfeff0")
         hz_label.place(relx=0.33, rely=0.3, relwidth=0.029, relheight=0.4)
 
-        button = Button(self.fileFrame, text="Wybrać plik", font=15,
+        button = Button(self.fileFrame, text="Wybierz plik", font=15,
                         command=lambda: self.load_the_data(file_label, initial_fs), bg="white")
         button.place(relx=0.4, rely=0.3, relwidth=0.1, relheight=0.4)
         file_label = Label(self.fileFrame, font=15, bg="#dfeff0", borderwidth=2, relief="ridge", anchor = 'e')
@@ -86,42 +112,20 @@ class AppDesigner:
             return False
         else:
             try:
-                fs = int(fs)
+                self.fs = int(fs)
             except ValueError:
                 m_box.showerror('Błąd!', 'Częstotliwośc próbkowania powinna być liczbą całkowitą!')
                 return False
-            if fs <= 0 or fs > 100000:
+            if self.fs <= 0 or self.fs > 100000:
                 m_box.showerror('Błąd!', 'Częstotliwość próbkowania powinna \nmieśić się w przedziale (0, 100000] Hz'
                                         '\n\n Wprowadż dane jeszcze raz!')
                 return False
             else:
                 return True
 
-    def design_plot_frame(self):
-        f = Figure(figsize=(5, 5), dpi=100)
-        self.ax = f.add_subplot(111)
-        self.plotFigure = FigureCanvasTkAgg(f, self.plotFrame)
-        self.plotFigure.draw()
-        self.plotFigure.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        toolbar = NavigationToolbar2Tk(self.plotFigure, self.plotFrame)
-        toolbar.update()
-        self.plotFigure._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
-
-    def send_plot_frames(self):
-        self.modificator.get_plot_frames(self.ax, self.plotFigure)
-
-    def send_modified_data(self):
-        scaling_rate = self.scalingRateEntry.get()
-        t1 = self.lengthFrom.get()
-        t2 = self.lengthTo.get()
-
-        self.modificator.get_all_data(scaling_rate, t1, t2, self.nextButton)
-
-    def load_the_data(self, fileLabel, initial_fs):
-        self.fs = initial_fs.get()
-
-        if self.check_the_fs(self.fs):
-            if self.modificator.open_file(fileLabel, self.fs):
+    def load_the_data(self, file_label, initial_fs):
+        if self.check_the_fs(initial_fs.get()):
+            if self.modificator.open_file(file_label, self.fs):
                 self.modificator.overwrite(self.scalingRateEntry, self.lengthFrom, self.lengthTo)
                 self.change_buttons_state()
 
@@ -129,16 +133,8 @@ class AppDesigner:
         self.applyButton.config(state='normal')
         self.nextButton.config(state='normal')
 
-    def open_filtration_window(self):
-        filtration_window = tk.Toplevel(self.window)
-        filtration_window.geometry("1500x800")
-        filtration_window.title("Filtracja sygnału MKG")
-        filtration_window.minsize(1400, 600)
 
-        start_program(filtration_window, self.modificator.modified_data, int(self.fs))
-
-
-class Modificator:
+class ReadingWindowDataModificator:
     def __init__(self):
         self.originalData = np.array([])
         self.scaling_rate = 1.
@@ -157,10 +153,10 @@ class Modificator:
                 raw_data = loadtxt(filename)
                 self.originalData = raw_data[:, 1]
                 self.t2 = len(self.originalData)
-                self.fs = int(fs)
+                self.fs = fs
                 file_label["text"] = filename
             except Exception as e:
-                m_box.showerror('Błąd odczytu pliku', str(e))
+                m_box.showerror('Błąd odczytu pliku!', str(e))
                 return False
             return True
 
@@ -175,60 +171,53 @@ class Modificator:
         t2_entry.delete(0, END)
         t2_entry.insert(0, self.t2/self.fs)
 
-        self.modify_data()
+        self.modified_data = self.originalData[self.t1:self.t2] * self.scaling_rate
         self.draw_plot()
 
-    def modify_data(self):
-        self.modified_data = self.originalData[self.t1:self.t2]
-        self.modified_data = self.modified_data * self.scaling_rate
-        self.draw_plot()
-
-    def get_plot_frames(self, ax, plotFigure):
+    def set_plot_frames(self, ax, plotFigure):
         self.ax = ax
         self.plotFigure = plotFigure
 
-    def get_all_data(self, scaling_rate, t1, t2, next_button):
-        self.scaling_rate = scaling_rate
-        self.t1 = t1
-        self.t2 = t2
-
-        if self.check_the_data_type() and self.check_the_correctness():
+    def set_all_data(self, scaling_rate, t1, t2, next_button):
+        if self.check_correctness(scaling_rate, t1, t2):
             next_button.config(state="normal")
-            self.modify_data()
+            self.modified_data = self.originalData[self.t1:self.t2] * self.scaling_rate
+            self.draw_plot()
         else:
             next_button.config(state="disabled")
 
-    def check_the_data_type(self):
+    def check_the_data_type(self, scaling_rate, t1, t2):
         error_text = ""
         try:
-            self.scaling_rate = float(self.scaling_rate)
+            self.scaling_rate = float(scaling_rate)
         except ValueError:
-            error_text = error_text + "► Współczynnik skalowania powinien być liczbą.\n"
+            error_text = error_text + "► Współczynnik skalowania powinien być liczbą\n"
         try:
-            self.t1 = float(self.t1)
-            self.t2 = float(self.t2)
+            self.t1 = float(t1)
+            self.t2 = float(t2)
         except ValueError:
-            error_text = error_text + "► Długość powinna być wyrażona liczbami w sekundach.\n"
+            error_text = error_text + "► Długość powinna być wyrażona liczbami w sekundach\n"
         if error_text == "":
             return True
         else:
             m_box.showerror('Błąd', error_text + "\nWprowadż dane jeszcze raz!")
             return False
 
-    def transform_timing(self):
+    def check_correctness(self, scaling_rate, t1, t2):
+        if not self.check_the_data_type(scaling_rate, t1, t2):
+            return False
         self.t1 = int(self.t1 * self.fs)
         self.t2 = int(self.t2 * self.fs)
-
-    def check_the_correctness(self):
-        self.transform_timing()
         error_text = ""
         if self.scaling_rate < -1000 or self.scaling_rate > 1000:
             error_text = error_text + "► Współczynnik skalowania powinien mieścić się \n     " \
                                       "w przedziale [-1000, 1000]\n"
         if self.t1 < 0 or self.t1 > (len(self.originalData) - 3*self.fs):
-            error_text = error_text + f"► Wskazana wartość początku sygnału powinna mieścić się \n    w przedziale [0, {(len(self.originalData) - 3*self.fs)/self.fs}] s\n"
+            error_text = error_text + f"► Wskazana wartość początku sygnału powinna mieścić się \n    " \
+                                      f"w przedziale [0, {(len(self.originalData) - 3*self.fs)/self.fs}] s\n"
         if self.t2 < 3*self.fs or self.t2 > len(self.originalData):
-            error_text = error_text + f"► Wskazana wartość końcu sygnału powinna mieścić się \n    wprzedziale [3, {len(self.originalData)/self.fs}] s\n"
+            error_text = error_text + f"► Wskazana wartość końca sygnału powinna mieścić się \n    " \
+                                      f"w przedziale [3, {len(self.originalData)/self.fs}] s\n"
         if self.t2 <= self.t1:
             error_text = error_text + "► Wartość końca wybranego sygnału powinna być większa \n    od jego początku\n"
         if 0 < (self.t2-self.t1) < 3.*self.fs:
@@ -236,7 +225,8 @@ class Modificator:
         if error_text == "":
             return True
         else:
-            m_box.showerror('Błednie wprowadzone dane!', f'{error_text}\nWprowadż dane jeszcze raz!', font = ("", 15, 'bold'))
+            m_box.showerror('Błednie wprowadzone dane!', f'{error_text}\nWprowadż dane jeszcze raz!',
+                            font=("", 15, 'bold'))
             m_box.showerror()
             return False
 
@@ -254,14 +244,13 @@ class Modificator:
 def start_point():
     window = Tk()
     window.geometry("1500x800")
-    window.title("Obróbka sygnału MKG")
+    window.title("Wczytywanie sygnału MKG")
     window.minsize(1150, 500)
 
-    modificator = Modificator()
-    AppDesigner(modificator, window)
+    modificator = ReadingWindowDataModificator()
+    ReadingWindowDesigner(modificator, window)
 
     window.mainloop()
 
 
 start_point()
-
