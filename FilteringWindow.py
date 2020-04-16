@@ -3,13 +3,13 @@ import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import numpy as np
-from psd import *
 from scipy import *
 from scipy import signal
 from scipy.signal import filtfilt
 from tkinter import *
 from tkinter import messagebox as m_box
 matplotlib.use("TkAgg")
+from psd import *
 
 
 class FilteringWindowDesigner:
