@@ -139,7 +139,7 @@ class FilteringWindowDesigner:
 
     def create_average_label(self):
         heart_beats_label = Label(self.averageParFrame, text='Uśrednienie dla ' + self.mdf.heartBeatsQuantity +
-                                                             ' cykli serca',font='20', bg='white')
+                                                             ' cykli serca', font='Helvetica 12', bg='white')
         heart_beats_label.place(relx=0.2, rely=0.15, relwidth=0.6, relheight=0.1)
 
     def fill_plot_frames(self):

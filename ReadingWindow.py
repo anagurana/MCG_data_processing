@@ -98,7 +98,7 @@ class ReadingWindowDesigner:
         hz_label.place(relx=0.33, rely=0.3, relwidth=0.029, relheight=0.4)
 
         button = Button(self.fileFrame, text="Wybierz plik", font=15,
-                        command=lambda: self.load_the_data(file_label, initial_fs), bg="white")
+                        command=lambda: self.load_the_data(file_label, initial_fs), bg="white", justify=CENTER)
         button.place(relx=0.4, rely=0.3, relwidth=0.1, relheight=0.4)
         file_label = Label(self.fileFrame, font=15, bg="#dfeff0", borderwidth=2, relief="ridge", anchor = 'e')
         file_label.place(relx=0.5, rely=0.3, relwidth=0.45, relheight=0.4)
@@ -222,9 +222,7 @@ class ReadingWindowDataModificator:
         if error_text == "":
             return True
         else:
-            m_box.showerror('Błednie wprowadzone dane!', f'{error_text}\nWprowadż dane jeszcze raz!',
-                            font=("", 15, 'bold'))
-            m_box.showerror()
+            m_box.showerror('Błednie wprowadzone dane!', f'{error_text}\nWprowadż dane jeszcze raz!')
             return False
 
     def draw_plot(self):
