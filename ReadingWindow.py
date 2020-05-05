@@ -1,4 +1,6 @@
 import matplotlib
+import os
+import sys
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import numpy as np
@@ -10,6 +12,11 @@ from tkinter import messagebox as m_box
 from FilteringWindow import FilteringWindowDesigner, FiltrationWindowDataModificator
 matplotlib.use("TkAgg")
 
+TEMP_LOCAL_PATH = ""
+try:
+    TEMP_LOCAL_PATH = sys._MEIPASS
+except:
+    pass
 
 class ReadingWindowDesigner:
     def __init__(self, modificator, window):
@@ -65,6 +72,7 @@ class ReadingWindowDesigner:
         filtration_window = tk.Toplevel(self.window)
         filtration_window.geometry("1500x800")
         filtration_window.title("Filtracja sygnału MKG")
+        filtration_window.iconbitmap(os.path.join(TEMP_LOCAL_PATH, 'cardiogram.ico/cardiogram.ico'))
         filtration_window.minsize(1400, 600)
 
         FilteringWindowDesigner(FiltrationWindowDataModificator(self.modificator.modified_data, self.fs), 
@@ -239,9 +247,10 @@ class ReadingWindowDataModificator:
 def start_point():
     window = Tk()
     window.geometry("1500x800")
-    window.title("Wczytywanie sygnału MKG")
     window.minsize(1150, 500)
 
+    window.iconbitmap(os.path.join(TEMP_LOCAL_PATH, 'cardiogram.ico/cardiogram.ico'))
+    window.title("Wczytywanie sygnału MKG")
     modificator = ReadingWindowDataModificator()
     ReadingWindowDesigner(modificator, window)
 

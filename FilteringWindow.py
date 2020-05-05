@@ -34,7 +34,7 @@ class FilteringWindowDesigner:
     def create_frames(self, window):
         self.filtersParFrame = Frame(window, bg='#b6d5d6', bd=10)
         self.filtersParFrame.place(relx=0, rely=0, relwidth=0.25, relheight=0.5)
-        self.averageParFrame = Frame(window, bg='#b6d5d6', bd=0)
+        self.averageParFrame = Frame(window, bg='#b6d5d6')
         self.averageParFrame.place(relx=0, rely=0.5, relwidth=0.25, relheight=0.5)
 
         back_frame = Frame(window, bg='#b6d5d6')
@@ -55,7 +55,7 @@ class FilteringWindowDesigner:
 
         self.create_filters_par()
 
-        empty_space_end = Label(self.filtersParFrame).place(relx=0.02, rely=0.975, relwidth=0.96, relheight=0.025)
+        empty_space_end = Label(self.filtersParFrame).place(relx=0.02, rely=0.822, relwidth=0.96, relheight=0.015)
 
     def create_filters_par(self):
         self.hp_par_entries()
@@ -131,16 +131,13 @@ class FilteringWindowDesigner:
             self.mdf.bpDictionary[i]["Value"].place(relx=0.505, rely=0.675 + n, relwidth=0.37, relheight=0.05)
             bp_width = Label(self.filtersParFrame, font=("", 11), text="Hz")
             bp_width.place(relx=0.875, rely=0.675 + n, relwidth=0.105, relheight=0.05)
-            if i == 150:
-                n = n + .053
-            else:
-                n = n + .05
+            n = n + .05
         self.mdf.set_bp_values()
 
     def create_average_label(self):
         heart_beats_label = Label(self.averageParFrame, text='Uśrednienie dla ' + self.mdf.heartBeatsQuantity +
                                                              ' cykli serca', font='Helvetica 12', bg='white')
-        heart_beats_label.place(relx=0.2, rely=0.15, relwidth=0.6, relheight=0.1)
+        heart_beats_label.place(relx=0.2, rely=0, relwidth=0.6, relheight=0.1)
 
     def fill_plot_frames(self):
         signals_figure = Figure(figsize=(0.5, 0.5))
@@ -179,9 +176,9 @@ class FilteringWindowDesigner:
         self.plots = [plot_signals, plot_power, plot_butterfly, plot_average]
 
     def create_apply_button(self):
-        apply_button = Button(self.averageParFrame, text="Zastosuj", command=self.send_all_values_to_modification,
+        apply_button = Button(self.filtersParFrame, text="Zastosuj", command=self.send_all_values_to_modification,
                               font='Tahoma  15 bold', bg='white')
-        apply_button.place(relx=0.2, rely=0.01, relwidth=0.6, relheight=0.1)
+        apply_button.place(relx=0.183, rely=0.9, relwidth=0.634, relheight=0.1)
 
     def send_all_values_to_modification(self):
 
@@ -211,7 +208,7 @@ class FiltrationWindowDataModificator:
         self.lpOrderValue = 4
         self.bpCheckVar = BooleanVar(value=True)
         self.bpDictionary = {}
-        self.bpValues = [50, 100, 150, 35, 45, 55]
+        self.bpValues = [50, 100, 150]
         self.bpDefault50 = 4.
         self.bpDefault = 2.
 
@@ -353,11 +350,18 @@ class FiltrationWindowDataModificator:
         self.draw_averaging_plot(3, average_final, ts_tmpl)
 
     def peaks_and_averaged (self):
-        ecg_data = ecg.ecg(self.modified_data, sampling_rate=self.fsValue, show=False)
+        data = self.modified_data
+        min_peak = min(data)
+        max_peak = max(data)
+        if abs(min_peak) > abs(max_peak):
+            k = -1
+        else:
+            k = 1
+        ecg_data = ecg.ecg(k*data, sampling_rate=self.fsValue, show=False)
         rpeaks = ecg_data['rpeaks']
         templates = ecg_data['templates']
         average_final = np.average(templates, axis=0)
-        return rpeaks, average_final, templates
+        return rpeaks, k*average_final, k*templates
 
     def draw_signal(self, figure_position, rpeaks):
         times = arange(len(self.modified_data)) / self.fsValue
@@ -375,8 +379,8 @@ class FiltrationWindowDataModificator:
         self.ax[figure_position].set_title('Widmo mocy', fontsize=12)
         self.ax[figure_position].set_xlabel('Częstotliwość [Hz]', fontsize=7, labelpad=0)
         self.ax[figure_position].set_ylabel('Amplituda [pT]', fontsize=7, labelpad=3)
-        freqs, psd1 = powerSpectralDensity(self.modified_data, self.fsValue)
-        self.ax[figure_position].loglog(freqs, psd1)
+        freqs, psd = powerSpectralDensity(self.modified_data, self.fsValue)
+        self.ax[figure_position].loglog(freqs, psd)
 
         self.plots[figure_position].draw()
 
